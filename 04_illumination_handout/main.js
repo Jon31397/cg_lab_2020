@@ -9,7 +9,7 @@
 var gl = null;
 
 var root = null;
-var rotateLight, rotateLight2, rotateNode;
+var rotateLight, rotateLight2, rotateNode, rotorNode;
 const camera = {
   rotation: {
     x: 0,
@@ -23,7 +23,8 @@ loadResources({
   fs: 'shader/phong.fs.glsl',
   vs_single: 'shader/single.vs.glsl',
   fs_single: 'shader/single.fs.glsl',
-  model: 'models/C-3PO.obj'
+  model1: 'models/Plane8.obj',
+  model2: 'models/Rotor2.obj'
 }).then(function (resources /*an object containing our keys with the loaded resources*/) {
   init(resources);
 
@@ -57,7 +58,7 @@ function createSceneGraph(gl, resources) {
     light.ambient = [.5, .5, .5, 1];
     light.diffuse = [1, 1, 1, 1];
     light.specular = [1, 1, 1, 1];
-    light.position = [0, 2, 2];
+    light.position = [0, 2, 5];
     light.append(createLightSphere())
     //TASK 4-1 animated light using rotateLight transformation node
     rotateLight = new TransformationSGNode(mat4.create(), [light]);
@@ -72,7 +73,7 @@ function createSceneGraph(gl, resources) {
     light2.ambient = [0, 0, 0, 1];
     light2.diffuse = [1, 0, 0, 1];
     light2.specular = [1, 0, 0, 1];
-    light2.position = [2, 0.2, 0];
+    light2.position = [5, 0.2, 0];
     light2.uniform = 'u_light2';
     light2.append(createLightSphere());
     rotateLight2 = new TransformationSGNode(mat4.create(), [light2]);
@@ -81,7 +82,7 @@ function createSceneGraph(gl, resources) {
 
   {
     //TASK 2-4 wrap with material node
-    let c3po = new RenderSGNode(resources.model);
+    let c3po = new RenderSGNode(resources.model1);
     c3po = new MaterialNode(c3po);
     c3po.ambient = [0.24725, 0.1995, 0.0745, 1];
     c3po.diffuse = [0.75164, 0.60648, 0.22648, 1];
@@ -89,10 +90,24 @@ function createSceneGraph(gl, resources) {
     c3po.shininess = 50;
 
     rotateNode = new TransformationSGNode(mat4.create(), [
-      new TransformationSGNode(glm.translate(0,-1.5, 0),  [
+      new TransformationSGNode(glm.translate(0, 0, 0),  [
         c3po
       ])
     ]);
+    let rotor = new RenderSGNode(resources.model2);
+    rotor = new MaterialNode(rotor);
+    rotor.ambient = [0.24725, 0.1995, 0.0745, 1];
+    rotor.diffuse = [0.75164, 0.60648, 0.22648, 1];
+    rotor.specular = [0.628281, 0.555802, 0.366065, 1];
+    rotor.shininess = 50;
+    
+    rotorNode = new TransformationSGNode(mat4.create(), [
+      new TransformationSGNode(glm.translate(0, 0, 3.22),  [
+        rotor
+      ])
+    ]);
+
+    rotateNode.append(rotorNode);
     root.append(rotateNode);
   }
 
@@ -184,6 +199,7 @@ function render(timeInMilliseconds) {
                             glm.rotateX(camera.rotation.y));
 
   rotateNode.matrix = glm.rotateY(timeInMilliseconds*-0.01);
+  rotorNode.matrix = glm.rotateZ(timeInMilliseconds*3);
 
   //TASK 4-2 enable light rotation
   rotateLight.matrix = glm.rotateY(timeInMilliseconds*0.05);
