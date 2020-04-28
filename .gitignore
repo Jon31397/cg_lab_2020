@@ -1,3 +1,7 @@
 /.idea
 /bower_components
 /node_modules
+.vs/cg_lab_2020/v16/.suo
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
