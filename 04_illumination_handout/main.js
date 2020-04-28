@@ -23,7 +23,7 @@ loadResources({
   fs: 'shader/phong.fs.glsl',
   vs_single: 'shader/single.vs.glsl',
   fs_single: 'shader/single.fs.glsl',
-  model1: 'models/Plane8.obj',
+  model1: 'models/Bridge10wtf.obj',
   model2: 'models/Rotor2.obj'
 }).then(function (resources /*an object containing our keys with the loaded resources*/) {
   init(resources);
@@ -90,7 +90,7 @@ function createSceneGraph(gl, resources) {
     c3po.shininess = 50;
 
     rotateNode = new TransformationSGNode(mat4.create(), [
-      new TransformationSGNode(glm.translate(0, 0, 0),  [
+      new TransformationSGNode(glm.scale(0.1, 0.1, 0.1),  [
         c3po
       ])
     ]);
@@ -107,7 +107,7 @@ function createSceneGraph(gl, resources) {
       ])
     ]);
 
-    rotateNode.append(rotorNode);
+    //rotateNode.append(rotorNode);
     root.append(rotateNode);
   }
 
