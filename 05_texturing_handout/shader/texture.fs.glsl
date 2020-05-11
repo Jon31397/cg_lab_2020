@@ -57,6 +57,7 @@ vec4 calculateSimplePointLight(Light light, Material material, vec3 lightVec, ve
   if(u_enableObjectTexture)
   {
     //TASK 2: replace diffuse and ambient material color with texture color
+		//material.ambient = textureColor;
 		material.diffuse = /*material.diffuse */ textureColor;
 		material.specular = /*material.specular */ textureColor;
 		//Note: an alternative to replacing the material color is to multiply it with the texture color

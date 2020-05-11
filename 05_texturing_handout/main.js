@@ -308,10 +308,11 @@ function render(timeInMilliseconds) {
   context.viewMatrix = mat4.multiply(mat4.create(), lookAtMatrix, mouseRotateMatrix);
 
   //update animations
+  context.timeInMilliseconds = timeInMilliseconds;
+
   rotateNode.matrix = glm.rotateY(timeInMilliseconds*-0.01);
   rotateLight.matrix = glm.rotateY(timeInMilliseconds*0.05);
 
-  context.timeInMilliseconds = timeInMilliseconds;
 
   //render scenegraph
   root.render(context);
@@ -336,7 +337,7 @@ class TextureSGNode extends SGNode {
     //set shader parameters
     //TASK 1: set texture unit to sampler in shader
     gl.uniform1i(gl.getUniformLocation(context.shader, 'u_tex'), this.textureunit);
-    gl.uniform1f(gl.getUniformLocation(context.shader, 'u_time'), gl.timeInMilliseconds);
+    gl.uniform1f(gl.getUniformLocation(context.shader, 'u_time'), context.timeInMilliseconds);
 
     //activate/select texture unit and bind texture
     //TASK 1: activate/select texture unit and bind texture
