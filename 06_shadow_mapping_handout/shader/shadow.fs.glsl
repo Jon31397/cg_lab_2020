@@ -75,7 +75,7 @@ vec4 calculateSimplePointLight(Light light, Material material, vec3 lightVec, ve
 	//Normally you should pass them to the calculateSimplePointLight function as parameters since they change for each light source!
 
   //TASK 2.3: apply perspective division to v_shadowMapTexCoord and save to shadowMapTexCoord3D
-  vec3 shadowMapTexCoord3D = vec3(0,0,0);
+  vec3 shadowMapTexCoord3D = v_shadowMapTexCoord.xyz / v_shadowMapTexCoord.w;
 
 	//do texture space transformation (-1 to 1 -> 0 to 1)
 	shadowMapTexCoord3D = vec3(0.5,0.5,0.5) + shadowMapTexCoord3D*0.5;
@@ -83,12 +83,21 @@ vec4 calculateSimplePointLight(Light light, Material material, vec3 lightVec, ve
 	shadowMapTexCoord3D.z -= 0.003;
 
   float shadowCoeff = 1.0; //set to 1 if no shadow!
+  for (float i = -1.0; i <= 1.0; i++) {
+	  for (float j = -1.0; j <= 1.0; j++) {
+      vec2 pos = vec2(1.0/u_shadowMapWidth * i + shadowMapTexCoord3D.x, 1.0/u_shadowMapHeight * j + shadowMapTexCoord3D.y);
+      float zShadowMap = texture2D(u_depthMap, pos).r;
+      if (zShadowMap < shadowMapTexCoord3D.z) {
+        shadowCoeff -= 1.0/9.0;
+      }
+  	}
+  }
 	//TASK 2.4: look up depth in u_depthMap and set shadow coefficient (shadowCoeff) to 0 based on depth comparison
 
   //EXTRA TASK: Improve shadow quality by sampling multiple shadow coefficients (a.k.a. PCF)
 
   //TASK 2.5: apply shadow coefficient to diffuse and specular part
-  return c_amb + c_diff + c_spec + c_em;
+  return c_amb + c_diff * shadowCoeff + c_spec * shadowCoeff + c_em;
 }
 
 void main (void) {
